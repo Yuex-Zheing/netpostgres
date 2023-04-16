@@ -16,31 +16,32 @@ namespace netpostgres.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly PostgresdbContext ctx;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, PostgresdbContext _postgresdbContext)
         {
             _logger = logger;
+            ctx = _postgresdbContext;
         }
 
         [HttpPost(Name = "addempleado")]
         public Empleado AddEmpleado(Empleado emp)
         {
             Empleado rt = new Empleado();
-            using (PostgresdbContext ctx = new PostgresdbContext())
             {
                 var idMax = ctx.Empleados.Max(z => z.Id);
                 emp.Id = idMax + 1;
                 ctx.Empleados.Add(emp);
                 ctx.SaveChanges();
-               
-                rt = (from x in ctx.Empleados.Where(z=>z.Id == emp.Id)
-                     select x).First();
+
+                rt = (from x in ctx.Empleados.Where(z => z.Id == emp.Id)
+                      select x).First();
             }
-            
+
             return rt;
         }
 
@@ -53,7 +54,7 @@ namespace netpostgres.Controllers
         {
             List<Empleado> emp = new List<Empleado>();
 
-            using (PostgresdbContext ctx = new PostgresdbContext())
+            //using (PostgresdbContext ctx = new PostgresdbContext())
             {
                 emp = (from x in ctx.Empleados
                        select x).ToList();

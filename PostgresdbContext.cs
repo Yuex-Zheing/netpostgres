@@ -6,9 +6,9 @@ namespace netpostgres;
 
 public partial class PostgresdbContext : DbContext
 {
-    public PostgresdbContext()
-    {
-    }
+    //public PostgresdbContext()
+    //{
+    //}
 
     public PostgresdbContext(DbContextOptions<PostgresdbContext> options)
         : base(options)
@@ -17,8 +17,8 @@ public partial class PostgresdbContext : DbContext
 
     public virtual DbSet<Empleado> Empleados { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=192.168.100.154;Database=postgresdb;Username=wquimis;Password=william123456");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseNpgsql("Host=192.168.100.154;Database=postgresdb;Username=wquimis;Password=william123456");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
