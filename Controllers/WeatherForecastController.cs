@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace netpostgres.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[action]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -13,21 +17,51 @@ namespace netpostgres.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpPost(Name = "addempleado")]
+        public Empleado AddEmpleado(Empleado emp)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            Empleado rt = new Empleado();
+            using (PostgresdbContext ctx = new PostgresdbContext())
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                var idMax = ctx.Empleados.Max(z => z.Id);
+                emp.Id = idMax + 1;
+                ctx.Empleados.Add(emp);
+                ctx.SaveChanges();
+               
+                rt = (from x in ctx.Empleados.Where(z=>z.Id == emp.Id)
+                     select x).First();
+            }
+            
+            return rt;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "getempleado")]
+        public List<Empleado> getEmpleado()
+        {
+            List<Empleado> emp = new List<Empleado>();
+
+            using (PostgresdbContext ctx = new PostgresdbContext())
+            {
+                emp = (from x in ctx.Empleados
+                       select x).ToList();
+
+            }
+
+            return emp;
+        }
+
     }
 }
