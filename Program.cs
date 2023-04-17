@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Configuration.AddJsonFile("config/appsettings.k8s.json", optional: true, reloadOnChange: true);
 
 string conex = builder.Configuration.GetConnectionString("WebApiDatabase") ?? "";
 
@@ -19,7 +19,8 @@ builder.Services.AddDbContext<PostgresdbContext>(optionsBuilder =>
 {
     optionsBuilder.UseNpgsql(conex);
 
-}, ServiceLifetime.Singleton, ServiceLifetime.Singleton);
+});
+
 
 
 var app = builder.Build();
